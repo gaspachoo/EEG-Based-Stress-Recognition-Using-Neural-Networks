@@ -3,9 +3,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from support_func.import_data import load_dataset,load_labels,split_data
-from dataset_class import *
-from early_stopping_class import *
-
+from support_func.dataset_class import *
+from support_func.early_stopping_class import *
 
 
 def train_gen(data_folder,labels_file,num_classes, test_size=0.2, sampling_mode = None):
