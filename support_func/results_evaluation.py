@@ -3,7 +3,7 @@ from torchmetrics.classification import MulticlassF1Score, MulticlassConfusionMa
 import torch
 import seaborn as sns
 
-def plot_history(history, model_name):
+def plot_history_cla(history, model_name):
     epochs = range(1, len(history['train_loss']) + 1)
     plt.plot(epochs, history['train_loss'], label='Train Loss')
     plt.plot(epochs, history['val_loss'], label='Val Loss')
@@ -14,12 +14,29 @@ def plot_history(history, model_name):
     plt.ylabel('Loss / Accuracy')
     plt.legend()
     plt.show()
+    
+def plot_history_reg(history, model_name):
+    """Plot training & validation loss over epochs for regression."""
+    
+    epochs = range(1, len(history['train_loss']) + 1)
+    
+    plt.figure(figsize=(10,5))
+    plt.plot(epochs, history['train_loss'], label='Train Loss')
+    plt.plot(epochs, history['val_loss'], label='Validation Loss')
+    
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss (MSE)')
+    plt.title(f'Training History - {model_name}')
+    plt.legend()
+    plt.grid()
+    plt.show()
 
-def evaluate_with_metrics_gpu(model, loader, device):
+def evaluate_with_metrics_gpu(model, loader, device, num_classes):
     model.eval()
 
-    f1_metric = MulticlassF1Score(num_classes=3, average='weighted').to(device)
-    cm_metric = MulticlassConfusionMatrix(num_classes=3).to(device)
+    # ✅ Adapt F1-Score and Confusion Matrix to dynamic num_classes
+    f1_metric = MulticlassF1Score(num_classes=num_classes, average='weighted').to(device)
+    cm_metric = MulticlassConfusionMatrix(num_classes=num_classes).to(device)
 
     with torch.no_grad():
         for batch_data, batch_labels in loader:
@@ -37,16 +54,25 @@ def evaluate_with_metrics_gpu(model, loader, device):
 
     print(f"Weighted F1-score (GPU): {f1_score_gpu:.4f}")
 
-    # Passage sur CPU et conversion en numpy
+    # ✅ Move Confusion Matrix to CPU and convert to NumPy
     cm_cpu = confusion_matrix_gpu.cpu().numpy()
 
-    # 🔹 Normalisation par classe réelle (ligne)
+    # ✅ Normalize by actual class (row-wise)
     cm_normalized = cm_cpu.astype('float') / cm_cpu.sum(axis=1, keepdims=True)
 
-    # Heatmap normalisée
+    # ✅ Dynamically set class labels
+    if num_classes == 2:
+        class_labels = ["Low", "High"]
+    elif num_classes == 3:
+        class_labels = ["Low", "Medium", "High"]
+    else:
+        class_labels = [str(i+1) for i in range(num_classes)]  # 1,2,3,...,num_classes
+
+    # ✅ Plot Normalized Confusion Matrix
+    plt.figure(figsize=(6,5))
     sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='Blues',
-                xticklabels=['Low', 'Medium', 'High'],
-                yticklabels=['Low', 'Medium', 'High'],
+                xticklabels=class_labels,
+                yticklabels=class_labels,
                 cbar_kws={'label': 'Proportion'})
     
     plt.xlabel('Predicted')
