@@ -37,7 +37,7 @@ The dataset comprises EEG recordings labeled with corresponding stress levels. D
    - Use `main.py` to evaluate the trained model's performance on test data.
 
 ## Results
-The CNN model achieved an accuracy of **[insert accuracy]%** on the test dataset, demonstrating its efficacy in classifying stress levels from EEG signals.
+The CNN model achieved a really bad accuracy on the test dataset, demonstrating its lack of efficacy in classifying stress levels from EEG signals.
 
 ## References
 - [Assignment: EEG-Based Emotion Recognition Using Neural Networks](Assignment_%20EEG-Based%20Emotion%20Recognition%20Using%20Neural%20Networks.pdf)
