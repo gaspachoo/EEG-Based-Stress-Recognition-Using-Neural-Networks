@@ -4,7 +4,7 @@ import pywt
 from scipy.signal import butter, filtfilt, savgol_filter
 from sklearn.decomposition import FastICA
 
-def bandpass_filter(signal, lowcut, highcut, fs, order=4):
+def bandpass_filter(signal, lowcut=0.5, highcut=40, fs=128, order=4):
     """Band-pass filter for EEG signal."""
     nyquist = 0.5 * fs
     b, a = butter(order, [lowcut / nyquist, highcut / nyquist], btype='band')
