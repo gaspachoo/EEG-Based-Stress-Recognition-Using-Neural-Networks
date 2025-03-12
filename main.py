@@ -6,8 +6,8 @@ import torch
 if __name__ == "__main__":
     data_folder = 'filtered_data'
     labels_file = 'scales.xls'
-    num_classes =3
-    test_size=0.2
+    num_classes = 3
+    test_size = 0.2
     sampling_mode = "'oversampling" # None or "oversampling" or "undersampling"
     
     
