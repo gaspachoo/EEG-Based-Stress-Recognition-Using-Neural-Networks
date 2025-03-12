@@ -45,18 +45,20 @@ pip install numpy pandas matplotlib torch torchvision scikit-learn mne scipy sea
    git clone https://github.com/your-repo-link.git
    cd your-repo-name
    ```
-2. **Preprocess the EEG dataset:**  
+2. **(Facultative) Explore the dataset:**  
    ```bash
-   jupyter notebook date_analysis.ipynb
+   jupyter notebook data_analysis.ipynb
    ```
-3. **Train the CNN model:**  
+
+3. **(Facultative) Filter the EEG dataset:**  
    ```bash
-   jupyter notebook neural_network.ipynb
+   python filter_all_data.py
    ```
-4. **Evaluate the model:**  
+4. **Train and evaluate a model:**  
    ```bash
    python main.py
    ```
+
 
 ## 📈 Results & Performance Analysis  
 The CNN model achieved **poor accuracy** on the test dataset, highlighting challenges in classifying stress levels from EEG signals. Future work may explore alternative architectures, feature extraction methods, and improved preprocessing techniques.  
