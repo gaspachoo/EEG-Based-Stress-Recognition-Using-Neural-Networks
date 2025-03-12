@@ -6,13 +6,17 @@ This project explores the application of **Convolutional Neural Networks (CNNs)*
 ## 📚 Project Structure  
 The repository is organized as follows:  
 
-- **`Data/`** – Contains EEG datasets used for training and evaluation.  
-- **`support_func/`** – Includes auxiliary Python scripts for data processing and model support:  
-   - ***`dataset_class.py`*** – Defines the EEG dataset structure.  
-   - ***`filters.py`*** – Implements filtering techniques for EEG signal preprocessing.  
-   - ***`import_data.py`*** – Handles EEG dataset loading and formatting.  
-   - ***`NN_classes.py`*** – Contains neural network architectures, including CNN-based models.  
-- **`date_analysis.ipynb`** – Jupyter Notebook for dataset analysis and preprocessing.  
+- **`Data/`** – Contains EEG datasets used for training and evaluation, including those downloaded and those generated using `filter_all_data.py` 
+- **`support_func/`** – Includes auxiliary Python scripts for data processing and model support:
+   - ***`cleaning_algos.py`*** – Contains mutliple data processing algorithms.
+   - ***`dataset_class.py`*** – Defines the EEG dataset structure.
+   - ***`early_stopping_class.py`*** – Defines the Early Stopping class.
+   - ***`filter_all_data.py`*** – Implements filtering techniques for EEG signal preprocessing.  
+   - ***`import_data.py`*** – Defines the functions to import data, labels and split behind train/val datasets.  
+   - ***`model_processing.py`*** – Handles train generating, loading, training, under and over-sampling.  
+   - ***`NN_classes.py`*** – Contains neural network architectures, including CNN-based models.
+   - ***`results_evaluation.py`*** – Implements functions to show the results and plot confusion matrix.  
+- **`date_analysis.ipynb`** – Jupyter Notebook for exploring the dataset and displaying multiple plots.  
 - **`neural_network.ipynb`** – Implements and trains the CNN model for EEG classification.  
 - **`main.py`** – Main script for model evaluation and performance testing.  
 - **`subject_head_with_electrodes.png`** – Visual representation of EEG electrode placements.  

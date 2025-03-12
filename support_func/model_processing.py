@@ -2,38 +2,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from support_func.data_processing import load_dataset,load_labels,split_data
+from support_func.import_data import load_dataset,load_labels,split_data
+from dataset_class import *
+from early_stopping_class import *
 
-class EEGDataset(Dataset):
-    def __init__(self, data, labels):
-        self.data = torch.tensor(data, dtype=torch.float32)  # EEG data
-        self.labels = torch.tensor(labels, dtype=torch.long)  # Labels as long for classification
-
-    def __len__(self):
-        return len(self.labels)
-
-    def __getitem__(self, idx):
-        return self.data[idx], self.labels[idx]
-    
-class EarlyStopping:
-    def __init__(self, patience=5, delta=0.0):
-        """
-        Early stops the training if validation loss doesn't improve after a given patience.
-        """
-        self.patience = patience
-        self.delta = delta
-        self.best_loss = None
-        self.counter = 0
-        self.early_stop = False
-
-    def __call__(self, val_loss):
-        if self.best_loss is None or val_loss < self.best_loss - self.delta:
-            self.best_loss = val_loss
-            self.counter = 0
-        else:
-            self.counter += 1
-            if self.counter >= self.patience:
-                self.early_stop = True
 
 
 def train_gen(data_folder,labels_file,num_classes, test_size=0.2, sampling_mode = None):
