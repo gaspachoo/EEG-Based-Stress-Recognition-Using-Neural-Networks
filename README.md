@@ -1,44 +1,60 @@
-# EEG-Based Stress Level Classification Using CNNs
+# 🧠 EEG-Based Stress Level Classification Using CNNs  
 
-This project explores the application of Convolutional Neural Networks (CNNs) for classifying stress levels based on EEG data.
+## 📌 Project Overview  
+This project explores the application of **Convolutional Neural Networks (CNNs)** for classifying stress levels based on **EEG data**. It includes data preprocessing, model training, and evaluation, aiming to improve classification accuracy through advanced neural network architectures and signal processing techniques.  
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Dataset](#dataset)
-- [Project Structure](#project-structure)
-- [Usage](#usage)
-- [Results](#results)
-- [References](#references)
+## 📚 Project Structure  
+The repository is organized as follows:  
 
-## Project Overview
-The objective of this project is to develop a CNN model capable of accurately classifying stress levels from EEG signals. The approach involves data preprocessing, model training, and evaluation.
+- **`Data/`** – Contains EEG datasets used for training and evaluation.  
+- **`support_func/`** – Includes auxiliary Python scripts for data processing and model support:  
+   - ***`dataset_class.py`*** – Defines the EEG dataset structure.  
+   - ***`filters.py`*** – Implements filtering techniques for EEG signal preprocessing.  
+   - ***`import_data.py`*** – Handles EEG dataset loading and formatting.  
+   - ***`NN_classes.py`*** – Contains neural network architectures, including CNN-based models.  
+- **`date_analysis.ipynb`** – Jupyter Notebook for dataset analysis and preprocessing.  
+- **`neural_network.ipynb`** – Implements and trains the CNN model for EEG classification.  
+- **`main.py`** – Main script for model evaluation and performance testing.  
+- **`subject_head_with_electrodes.png`** – Visual representation of EEG electrode placements.  
 
-## Dataset
-The dataset comprises EEG recordings labeled with corresponding stress levels. Detailed information about the dataset is available in the `Data/` directory.
+## 📊 Dataset  
+The dataset comprises EEG recordings labeled with corresponding stress levels.  
+Detailed information about the dataset is available in the **`Data/`** directory.  
 
-## Project Structure
-- **Data/**: Contains EEG datasets used for training and evaluation.
-- **support_func/**: Includes auxiliary Python scripts for data processing and model support.
-- **Assignment n1.pptx**: Presentation detailing the assignment.
-- **Assignment_ EEG-Based Emotion Recognition Using Neural Networks.pdf**: Reference paper on EEG-based emotion recognition.
-- **date_analysis.ipynb**: Jupyter Notebook analyzing the dataset.
-- **main.py**: Main script for executing the CNN model.
-- **neural_network.ipynb**: Jupyter Notebook detailing the neural network implementation.
-- **subject head with electrodes.png**: Diagram showing electrode placement on the subject's head.
+## 🔬 Models Implemented  
+- **Convolutional Neural Network (CNN)** designed for EEG stress classification.  
+- Baseline models to compare CNN performance with simpler architectures.  
 
-## Usage
-1. **Data Preprocessing**:
-   - Utilize `date_analysis.ipynb` to preprocess and visualize the EEG data.
+## ⚙️ Installation & Requirements  
+Ensure you have the necessary dependencies installed before running the scripts:  
 
-2. **Model Training**:
-   - Run `neural_network.ipynb` to train the CNN model on the preprocessed data.
+```bash
+pip install numpy pandas matplotlib torch torchvision scikit-learn mne scipy seaborn
+```
 
-3. **Evaluation**:
-   - Use `main.py` to evaluate the trained model's performance on test data.
+## 🚀 How to Run  
 
-## Results
-The CNN model achieved a really bad accuracy on the test dataset, demonstrating its lack of efficacy in classifying stress levels from EEG signals.
+1. **Clone the repository:**  
+   ```bash
+   git clone https://github.com/your-repo-link.git
+   cd your-repo-name
+   ```
+2. **Preprocess the EEG dataset:**  
+   ```bash
+   jupyter notebook date_analysis.ipynb
+   ```
+3. **Train the CNN model:**  
+   ```bash
+   jupyter notebook neural_network.ipynb
+   ```
+4. **Evaluate the model:**  
+   ```bash
+   python main.py
+   ```
 
-## References
-- [Assignment: EEG-Based Emotion Recognition Using Neural Networks](Assignment_%20EEG-Based%20Emotion%20Recognition%20Using%20Neural%20Networks.pdf)
-- [Presentation: Assignment n1](Assignment%20n1.pptx)
+## 📈 Results & Performance Analysis  
+The CNN model achieved **poor accuracy** on the test dataset, highlighting challenges in classifying stress levels from EEG signals. Future work may explore alternative architectures, feature extraction methods, and improved preprocessing techniques.  
+
+## 🐝 References  
+- [Assignment: EEG-Based Emotion Recognition Using Neural Networks](Assignment_%20EEG-Based%20Emotion%20Recognition%20Using%20Neural%20Networks.pdf)  
+- [Presentation: Assignment n1](Assignment%20n1.pptx)  
