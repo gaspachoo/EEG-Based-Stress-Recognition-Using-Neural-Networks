@@ -10,12 +10,8 @@ from support_func.early_stopping_class import *
 # ✅ Load dataset function (EEG data & stress labels)
 def reshape_dataset(data_folder, labels_filename):
     data, labels = load_dataset(data_folder, labels_filename)
-    data = np.array(data, dtype=np.float32)
-    print(f"Data shape before reshaping: {data.shape}")  # Expecting (40, 9, channels, time)
-    print(f"Data dtype before reshaping: {data.dtype}")  # Should be float32 or float64
-    print(f"Contains None? {any(x is None for x in data.flatten())}")
-
-    
+    data = np.array(data, dtype=np.float32) # Data shape before reshaping:  (40, 9, channels, time)
+        
     num_channels, num_timepoints = data.shape[2], data.shape[3]  # (40, 9, channels, time)
     
     # Reshape (40 subjects, 9 trials) → (360, channels, time)

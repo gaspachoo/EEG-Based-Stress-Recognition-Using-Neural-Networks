@@ -6,22 +6,23 @@ import torch
 if __name__ == "__main__":
     data_folder = 'filtered_data'
     labels_file = 'scales.xls'
-    num_classes = 2
+    num_classes = 3
     test_size = 0.2
     sampling_mode = None # None or "oversampling" or "undersampling"
     
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    train_loader,test_loader, num_channels, num_timepoints = train_gen(data_folder, labels_file,num_classes, test_size=0.2,lstm=True)
+    train_loader,test_loader, num_channels, num_timepoints = train_gen(data_folder, labels_file,num_classes, test_size=0.2,lstm=False)
 
     print('✅ Data processed')
-    cnn_model = EEG_LSTM(num_channels, num_timepoints, num_classes).to(device)
+    cnn_model = EEG_CNN3(num_channels, num_timepoints, num_classes).to(device)
 
     print("⚙️ Training CNN")
-    cnn_model, cnn_history = train_with_early_stopping(cnn_model, train_loader, test_loader,device)
+    cnn_model, cnn_history = train_with_early_stopping(cnn_model, train_loader, test_loader,device, lr=0.0001, num_epochs=100)
 
     cnn_final_acc = cnn_history['val_acc'][-1]
     print(f"🚀 Final Validation Accuracy: {cnn_final_acc:.2f}%")
+    torch.save(cnn_model,"./Models/Model_cla_cnn3.pth")
 
     plot_history_cla(cnn_history, 'CNN')
     evaluate_with_metrics_gpu(cnn_model, test_loader,device,num_classes)

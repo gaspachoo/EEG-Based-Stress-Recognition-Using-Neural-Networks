@@ -36,5 +36,5 @@ def filter_all_data(method_name, input_dir):
 
 if __name__ == "__main__":
     input_dir = '../Data/raw_data'
-    method_name = 'bandpass_filter'
+    method_name = 'SKLFast_ICA'
     filter_all_data(method_name,input_dir)

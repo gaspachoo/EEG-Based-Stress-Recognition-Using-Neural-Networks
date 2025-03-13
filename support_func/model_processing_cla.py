@@ -28,11 +28,10 @@ def train_gen(data_folder, labels_filename, num_classes, test_size=0.2, lstm= Fa
     labels = labels - 1
  
     # Group labels (linspace or quantile binning)
-    bins = np.linspace(labels.min(), labels.max(), num_classes + 1)[1:-1]  # First and last excluded for np.digitize
-    grouped_labels = np.digitize(labels, bins)
-    #bins = np.quantile(labels, np.linspace(0, 1, num_classes + 1))  # Evenly distribute data across classes
-    #grouped_labels = np.digitize(labels, bins, right=True) - 1  # Ensure classes start at 0
-    print("Class distribution:", np.bincount(grouped_labels))
+    #bins = np.linspace(labels.min(), labels.max(), num_classes + 1)[1:-1]  # Distribute on evenly spaced points
+    bins = np.quantile(labels, np.linspace(0, 1, num_classes + 1))[1:-1]  # Evenly distribute data across nomber of samples in each class
+    grouped_labels = np.digitize(labels, bins, right=True)
+    print("Class distribution:", bins, np.bincount(grouped_labels))
     
     # Stratified split
     indices = np.arange(len(data))
@@ -127,6 +126,7 @@ def train_with_early_stopping(model, train_loader, val_loader, device, num_epoch
 
     return model, history
 
+
 def validate(model, loader, criterion, device):
     model.eval()
     total_loss = 0
@@ -150,6 +150,7 @@ def validate(model, loader, criterion, device):
     avg_loss = total_loss / len(loader)
     accuracy = 100 * correct / total
     return avg_loss, accuracy
+
 
 def random_oversample(data, labels):
 
@@ -176,6 +177,7 @@ def random_oversample(data, labels):
     data_balanced = np.vstack(new_data)
     labels_balanced = np.concatenate(new_labels)
     return data_balanced, labels_balanced
+
 
 def random_undersample(data, labels):
     from collections import Counter

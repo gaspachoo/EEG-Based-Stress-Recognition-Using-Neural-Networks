@@ -19,8 +19,8 @@ if __name__ == "__main__":
 
     print('✅ Data processed')
 
-    # Define CNN model for Regression (output_size = 1)
-    cnn_model = EEG_CNN_Reg(num_channels, num_timepoints, output_size=1).to(device)
+    # Define CNN model for Regression (num_classes = 1)
+    cnn_model = SimpleNN3(num_channels, num_timepoints,num_classes=1).to(device)
 
     print("⚙️ Training CNN for Regression")
     cnn_model, cnn_history = train_with_early_stopping(
@@ -33,6 +33,3 @@ if __name__ == "__main__":
 
     # Plot Training History (Now tracking loss instead of accuracy)
     plot_history_reg(cnn_history, 'CNN')
-
-    # Evaluate Model (Use regression metrics instead)
-    evaluate_with_metrics_gpu(cnn_model, test_loader, device, regression=True)

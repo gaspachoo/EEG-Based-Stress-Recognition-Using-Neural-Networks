@@ -145,14 +145,15 @@ class EEG_CNN_GRU(nn.Module):
         x = self.fc2(x)
         return x
 
-class SimpleNN_Reg(nn.Module):
-    def __init__(self, num_channels, num_timepoints, hidden_dim=128):
-        super(SimpleNN, self).__init__()
+
+class SimpleNN3(nn.Module): #### Adapted for reg
+    def __init__(self, num_channels, num_timepoints, num_classes, hidden_dim=128):
+        super().__init__()
         input_size = num_channels * num_timepoints  # Flatten EEG input
 
         self.fc1 = nn.Linear(input_size, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        self.fc3 = nn.Linear(hidden_dim, 1)  # Output a single value (regression)
+        self.fc3 = nn.Linear(hidden_dim, num_classes)  # Output a single value (regression)
         
         self.dropout = nn.Dropout(0.3)
     
@@ -165,9 +166,10 @@ class SimpleNN_Reg(nn.Module):
         x = self.fc3(x)  # No activation (linear output for regression)
         return x
     
-class EEG_CNN_Reg(nn.Module):
-    def __init__(self, num_channels, num_timepoints, output_size=1):  # ✅ Fix this
-        super(EEG_CNN_Reg, self).__init__()
+    
+class EEG_CNN3(nn.Module): #### Adapted for reg
+    def __init__(self, num_channels, num_timepoints,num_classes):  # ✅ Fix this
+        super().__init__()
         
         self.conv1 = nn.Conv1d(in_channels=num_channels, out_channels=32, kernel_size=3, padding=1)
         self.conv2 = nn.Conv1d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
@@ -177,7 +179,7 @@ class EEG_CNN_Reg(nn.Module):
 
         self.fc1 = nn.Linear(128 * (num_timepoints // 8), 128)
         self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, output_size)  # ✅ Ensure this outputs a single regression value
+        self.fc3 = nn.Linear(64, num_classes)  # ✅ Ensure this outputs a single regression value
 
         self.dropout = nn.Dropout(0.3)
    
@@ -194,6 +196,7 @@ class EEG_CNN_Reg(nn.Module):
         x = self.fc3(x)  # ✅ No activation function (linear output for regression)
 
         return x
+
 
 class EEG_LSTM(nn.Module):
     def __init__(self, num_channels, num_timepoints, num_classes, hidden_dim=128, num_layers=2):
