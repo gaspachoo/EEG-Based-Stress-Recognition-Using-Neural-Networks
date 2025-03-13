@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from support_func.import_data import load_data,load_labels,load_dataset
+from support_func.import_data import load_dataset
 from support_func.dataset_class import *
 from support_func.early_stopping_class import *
 from sklearn.model_selection import train_test_split

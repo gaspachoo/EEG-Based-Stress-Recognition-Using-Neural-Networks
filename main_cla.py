@@ -12,10 +12,10 @@ if __name__ == "__main__":
     
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    train_loader,test_loader, num_channels, num_timepoints = train_gen(data_folder, labels_file,num_classes, test_size=0.2,lstm=False)
+    train_loader,test_loader, num_channels, num_timepoints = train_gen(data_folder, labels_file,num_classes, test_size=0.2,lstm=True)
 
     print('✅ Data processed')
-    cnn_model = EEG_CNN3(num_channels, num_timepoints, num_classes).to(device)
+    cnn_model = EEG_LSTM(num_channels, num_timepoints, num_classes).to(device)
 
     print("⚙️ Training CNN")
     cnn_model, cnn_history = train_with_early_stopping(cnn_model, train_loader, test_loader,device, lr=0.0001, num_epochs=100)

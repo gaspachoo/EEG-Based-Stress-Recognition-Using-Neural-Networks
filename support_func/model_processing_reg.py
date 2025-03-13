@@ -139,8 +139,3 @@ def validate(model, loader, criterion, device):
 
     avg_loss = total_loss / len(loader)
     return avg_loss
-
-data_folder = 'filtered_data'
-labels_file = 'scales.xls'
-
-test = reshape_dataset(data_folder,labels_file)
