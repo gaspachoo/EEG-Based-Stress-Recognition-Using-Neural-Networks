@@ -1,4 +1,4 @@
-main_reg# 🧠 EEG-Based Stress Level Classification Using CNNs  
+🧠 EEG-Based Stress Level Classification Using CNNs  
 
 ## 📌 Project Overview  
 This project explores the application of **Convolutional Neural Networks (CNNs)** for classifying stress levels based on **EEG data**. It includes data preprocessing, model training, and evaluation, aiming to improve classification accuracy through advanced neural network architectures and signal processing techniques.  
