@@ -1,4 +1,4 @@
-# 🧠 EEG-Based Stress Level Classification Using CNNs  
+main_reg# 🧠 EEG-Based Stress Level Classification Using CNNs  
 
 ## 📌 Project Overview  
 This project explores the application of **Convolutional Neural Networks (CNNs)** for classifying stress levels based on **EEG data**. It includes data preprocessing, model training, and evaluation, aiming to improve classification accuracy through advanced neural network architectures and signal processing techniques.  
@@ -8,16 +8,16 @@ The repository is organized as follows:
 
 - **`Data/`** – Contains EEG datasets used for training and evaluation, including those downloaded and those generated using `filter_all_data.py` 
 - **`support_func/`** – Includes auxiliary Python scripts for data processing and model support:
-   - ***`cleaning_algos.py`*** – Contains mutliple data processing algorithms.
-   - ***`dataset_class.py`*** – Defines the EEG dataset structure.
-   - ***`early_stopping_class.py`*** – Defines the Early Stopping class.
-   - ***`filter_all_data.py`*** – Implements filtering techniques for EEG signal preprocessing.  
-   - ***`import_data.py`*** – Defines the functions to import data, labels and split behind train/val datasets.  
-   - ***`model_processing.py`*** – Handles train generating, loading, training, under and over-sampling.  
-   - ***`NN_classes.py`*** – Contains neural network architectures, including CNN-based models.
-   - ***`results_evaluation.py`*** – Implements functions to show the results and plot confusion matrix.  
+   - **`cleaning_algos.py`** – Contains mutliple data processing algorithms.
+   - **`dataset_class.py`** – Defines the EEG dataset structure.
+   - **`early_stopping_class.py`** – Defines the Early Stopping class.
+   - **`filter_all_data.py`** – Implements filtering techniques for EEG signal preprocessing.  
+   - **`import_data.py`** – Defines the functions to import data, labels and split behind train/val datasets.  
+   - **`model_processing_cla.py`** and **`model_processing_reg.py`** – Handles train generating, loading, training, under and over-sampling for classification and regression.
+   - **`NN_classes.py`** – Contains neural network architectures, including CNN-based models.
+   - **`results_evaluation.py`** – Implements functions to show the results and plot confusion matrix.  
 - **`date_analysis.ipynb`** – Jupyter Notebook for exploring the dataset and displaying multiple plots.
-- **`main.py`** – Main script for model evaluation and performance testing.  
+- **`main_cla.py`** and **`main_reg.py`** – Main scripts for model evaluation and performance testing (classification or regression)  
 - **`subject_head_with_electrodes.png`** – Visual representation of EEG electrode placements.  
 
 ## 📊 Dataset  
