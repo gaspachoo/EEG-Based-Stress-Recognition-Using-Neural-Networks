@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     cnn_final_acc = cnn_history['val_acc'][-1]
     print(f"🚀 Final Validation Accuracy: {cnn_final_acc:.2f}%")
-    torch.save(cnn_model,"./Models/Model_cla_eeg.pth")
+    torch.save(cnn_model,"./Checkpoints/Model_cla_eeg.pth")
 
     plot_history_cla(cnn_history, 'CNN')
     evaluate_with_metrics_gpu(cnn_model, test_loader,device,num_classes)
