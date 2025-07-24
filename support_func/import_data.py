@@ -64,21 +64,21 @@ import os
 
 def segment_eeg(eeg_data, segment_length=256):
     """
-    Découpe les données EEG en segments de taille fixe.
+    Split EEG data into fixed-size segments.
 
     Args:
-        eeg_data (numpy.ndarray): Données EEG de forme (channels, time)
-        segment_length (int): Longueur du segment en échantillons
+        eeg_data (numpy.ndarray): EEG data shaped (channels, time)
+        segment_length (int): Segment length in samples
 
     Returns:
-        numpy.ndarray: Données segmentées de forme (n_segments, channels, segment_length)
-        int: Nombre de segments complets générés
+        numpy.ndarray: Segmented data shaped (n_segments, channels, segment_length)
+        int: Number of complete segments generated
     """
     num_samples = eeg_data.shape[1]
-    num_segments = num_samples // segment_length  # Nombre total de segments complets
-    segmented_data = eeg_data[:, :num_segments * segment_length]  # Tronque les échantillons restants
+    num_segments = num_samples // segment_length  # Total number of complete segments
+    segmented_data = eeg_data[:, :num_segments * segment_length]  # Truncate remaining samples
     segmented_data = segmented_data.reshape((eeg_data.shape[0], num_segments, segment_length))
-    segmented_data = np.transpose(segmented_data, (1, 0, 2))  # Reshape vers (n_segments, channels, segment_length)
+    segmented_data = np.transpose(segmented_data, (1, 0, 2))  # Reshape to (n_segments, channels, segment_length)
 
     return segmented_data, num_segments
 
@@ -86,16 +86,16 @@ def load_dataset2(data_dir, labels_filename, f_sampling=128, segment_duration=2)
     subjects = range(1, 41)
     trials = range(1, 4)
 
-    # Mapping des tâches
+    # Task mapping
     task_mapping = {'Maths': 'Arithmetic', 'Symmetry': 'Mirror_image', 'Stroop': 'Stroop'}
     tasks_excel = list(task_mapping.keys())
 
     labels_filepath = f'./Data/{labels_filename}'
     df = pd.read_excel(labels_filepath, header=[0, 1])
 
-    segment_length = segment_duration * f_sampling  # 2 sec * 128 Hz = 256 échantillons
+    segment_length = segment_duration * f_sampling  # 2 sec * 128 Hz = 256 samples
 
-    # Initialisation des structures
+    # Initialize structures
     data = np.empty((40, 9), dtype=object)
     labels = np.empty((40, 9), dtype=object)
 
@@ -115,10 +115,10 @@ def load_dataset2(data_dir, labels_filename, f_sampling=128, segment_duration=2)
                     mat = loadmat(filepath)
                     eeg_data = mat['Data'] if data_dir == 'raw_data' else mat['Clean_data']
                     
-                    # Découpe en segments de 2 secondes
+                    # Segment into 2-second windows
                     segmented_eeg, num_segments = segment_eeg(eeg_data, segment_length)
 
-                    # Stockage des données et des labels
+                    # Store data and labels
                     data[subject-1, trial_idx * 3 + task_idx] = segmented_eeg  # (num_segments, channels, time)
                     labels[subject-1, trial_idx * 3 + task_idx] = np.full((num_segments,), score)  # (num_segments,)
 

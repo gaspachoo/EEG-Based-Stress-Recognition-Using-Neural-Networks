@@ -89,7 +89,7 @@ class EEG_CNN2(nn.Module):
         self.dropout2 = nn.Dropout(0.3)
         self.pool2 = nn.MaxPool1d(2)
         
-        conv_output_size = num_timepoints // 4  # Deux maxpoolings de taille 2
+        conv_output_size = num_timepoints // 4  # Two max-pooling layers of size 2
         self.fc1 = nn.Linear(64 * conv_output_size, 64)
         self.dropout3 = nn.Dropout(0.4)
         self.fc2 = nn.Linear(64, num_classes)
@@ -213,7 +213,7 @@ class EEG_LSTM(nn.Module):
         batch_size, seq_len, channels, timepoints = x.shape
         x = x.view(batch_size, seq_len, -1)  # ✅ Flatten (channels, time) per trial
 
-        _, (hidden, _) = self.lstm(x)  # ✅ Récupérer le dernier état caché du LSTM
-        x = self.fc(hidden[-1])  # ✅ Dernière couche dense pour classification
+        _, (hidden, _) = self.lstm(x)  # ✅ Retrieve the last hidden state of the LSTM
+        x = self.fc(hidden[-1])  # ✅ Final fully connected layer for classification
 
         return x
