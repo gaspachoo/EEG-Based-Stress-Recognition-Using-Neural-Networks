@@ -264,7 +264,7 @@ def random_oversample(data, labels):
         repeats = max_count // len(cls_indices)
         remainder = max_count % len(cls_indices)
 
-        # Duplique les échantillons
+        # Duplicate samples
         new_data.append(np.repeat(data[cls_indices], repeats, axis=0))
         new_labels.append(np.repeat(labels[cls_indices], repeats))
 
