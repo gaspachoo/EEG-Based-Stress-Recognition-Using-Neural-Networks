@@ -68,3 +68,7 @@ The CNN model achieved **poor accuracy** on the test dataset, highlighting chall
 - [EEG-Based Emotion Recognition Using Neural Networks (ScienceDirect)](https://www.sciencedirect.com/science/article/pii/S2352340921010465)  
 - [SAM 40 Dataset (Figshare)](https://figshare.com/articles/dataset/SAM_40_Dataset_of_40_Subject_EEG_Recordings_to_Monitor_the_Induced-Stress_while_performing_Stroop_Color-Word_Test_Arithmetic_Task_and_Mirror_Image_Recognition_Task/14562090/1)
 - [Introduction to EEG (AlexEnge)](https://alexenge.github.io/intro-to-eeg/misc/index.html)
+
+## License
+This project is licensed under the [MIT License](LICENSE).
+
