@@ -32,10 +32,10 @@ In the **`Data/`** directory, you can find the downloaded data `artifcat_removal
 - **EEG_CNN_GRU**: A hybrid CNN-GRU model that extracts spatial EEG features using CNN and captures temporal dependencies with a GRU layer before classification.  
 
 ## ⚙️ Installation & Requirements  
-Ensure you have the necessary dependencies installed before running the scripts:  
+Install the required Python packages before running the scripts:
 
 ```bash
-pip install numpy pandas matplotlib torch torchvision scikit-learn mne scipy seaborn
+pip install -r requirements.txt
 ```
 
 ## 🚀 How to Run  
