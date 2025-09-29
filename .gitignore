@@ -2,3 +2,4 @@ __pycache__/
 neural_network.ipynb
 Data/
 Checkpoints/
+.venv/
