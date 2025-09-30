@@ -30,7 +30,7 @@ def filter_all_data(method_name, input_dir):
             save_path = os.path.join(output_dir, filename)
             savemat(save_path, {"Clean_data": cleaned_data})
 
-            print(f"✅ Saved cleaned file to {save_path}")
+            print(f"Saved cleaned file to {save_path}")
 
     print("All files processed successfully.")
 

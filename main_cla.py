@@ -16,7 +16,7 @@ if __name__ == "__main__":
         data_folder, labels_file, num_classes, test_size=0.2, lstm=False
     )
 
-    print("✅ Data processed")
+    print("Data processed")
     cnn_model = EEG_CNN(num_channels, num_timepoints, num_classes).to(device)
 
     print("⚙️ Training CNN")

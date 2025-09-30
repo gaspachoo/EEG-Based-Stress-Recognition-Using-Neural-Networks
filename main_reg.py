@@ -20,7 +20,7 @@ if __name__ == "__main__":
         data_folder, labels_file, test_size=test_size, sampling_mode=sampling_mode
     )
 
-    print("✅ Data processed")
+    print("Data processed")
 
     # Define CNN model for Regression (num_classes = 1)
     cnn_model = SimpleNN3(num_channels, num_timepoints, num_classes=1).to(device)
