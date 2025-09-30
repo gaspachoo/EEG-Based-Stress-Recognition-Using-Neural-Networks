@@ -1,6 +1,8 @@
-from support_func.model_processing_cla import train_gen2, train_with_early_stopping
+from support_func.model_processing_cla import (train_gen2,
+                                               train_with_early_stopping)
 from support_func.NN_classes import EEG_CNN
-from support_func.results_evaluation import evaluate_with_metrics_gpu, plot_history_cla
+from support_func.results_evaluation import (evaluate_with_metrics_gpu,
+                                             plot_history_cla)
 import torch
 import os
 
