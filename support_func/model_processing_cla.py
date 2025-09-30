@@ -302,7 +302,7 @@ def validate(model, loader, criterion, device):
 
     with torch.no_grad():
         for batch_data, batch_labels in loader:
-            # ⬇️ Transfert GPU
+            # Transfert GPU
             batch_data = batch_data.to(device)
             batch_labels = batch_labels.to(device)
 
