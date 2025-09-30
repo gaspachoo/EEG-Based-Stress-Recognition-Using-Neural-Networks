@@ -19,7 +19,7 @@ def filter_all_data(method_name, input_dir):
             # Load EEG data from the .mat file
             mat = loadmat(filepath)
             if "Data" not in mat:
-                print(f"❌ 'Data' not found in {filename}. Skipping.")
+                print(f"'Data' not found in {filename}. Skipping.")
                 continue
             eeg_data = mat["Data"]
 

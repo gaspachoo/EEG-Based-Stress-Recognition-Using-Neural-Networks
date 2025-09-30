@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Define CNN model for Regression (num_classes = 1)
     cnn_model = SimpleNN3(num_channels, num_timepoints, num_classes=1).to(device)
 
-    print("⚙️ Training CNN for Regression")
+    print("Training CNN for Regression")
     cnn_model, cnn_history = train_with_early_stopping(
         cnn_model, train_loader, test_loader, device
     )

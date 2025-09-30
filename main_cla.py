@@ -19,7 +19,7 @@ if __name__ == "__main__":
     print("Data processed")
     cnn_model = EEG_CNN(num_channels, num_timepoints, num_classes).to(device)
 
-    print("⚙️ Training CNN")
+    print("Training CNN")
     cnn_model, cnn_history = train_with_early_stopping(
         cnn_model, train_loader, test_loader, device, lr=0.0001, num_epochs=100
     )
