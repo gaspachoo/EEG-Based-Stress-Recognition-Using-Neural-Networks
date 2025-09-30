@@ -1,19 +1,23 @@
 [project]
 name = "eeg-based-stress-recognition-using-neural-networks"
 version = "0.1.0"
-description = "Add your description here"
+description = "EEG stress recognition"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "matplotlib>=3.7",
-    "mne>=1.3",
-    "numpy>=1.24",
-    "pandas>=1.5",
-    "pywavelets>=1.4",
-    "scikit-learn>=1.2",
-    "scipy>=1.10",
-    "seaborn>=0.12",
-    "torch>=1.13",
-    "torchmetrics>=0.11",
-    "xlrd>=2.0.2",
+  "torch @ https://download.pytorch.org/whl/cu126/torch-2.6.0%2Bcu126-cp310-cp310-win_amd64.whl",
+  "torchvision @ https://download.pytorch.org/whl/cu126/torchvision-0.21.0%2Bcu126-cp310-cp310-win_amd64.whl",
+  "torchaudio @ https://download.pytorch.org/whl/cu126/torchaudio-2.6.0%2Bcu126-cp310-cp310-win_amd64.whl",
+
+  "torchmetrics>=1.3,<2.0",
+
+  "matplotlib>=3.7",
+  "mne>=1.3",
+  "numpy>=1.24",
+  "pandas>=1.5",
+  "pywavelets>=1.4",
+  "scikit-learn>=1.2",
+  "scipy>=1.10",
+  "seaborn>=0.12",
+  "xlrd>=2.0.2",
 ]
