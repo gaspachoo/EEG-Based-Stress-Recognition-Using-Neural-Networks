@@ -38,7 +38,7 @@ Install the required Python packages before running the scripts:
 pip install -r requirements.txt
 ```
 
-## 🚀 How to Run  
+## How to Run  
 
 1. **Clone the repository:**  
    ```bash

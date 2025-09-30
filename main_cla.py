@@ -25,7 +25,7 @@ if __name__ == "__main__":
     )
 
     cnn_final_acc = cnn_history["val_acc"][-1]
-    print(f"🚀 Final Validation Accuracy: {cnn_final_acc:.2f}%")
+    print(f"Final Validation Accuracy: {cnn_final_acc:.2f}%")
     os.makedirs("./Checkpoints", exist_ok=True)
     torch.save(cnn_model, "./Checkpoints/Model_cla_eeg.pth")
 

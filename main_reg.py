@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     # Final Validation Loss (MSE)
     cnn_final_loss = cnn_history["val_loss"][-1]
-    print(f"🚀 Final Validation MSE: {cnn_final_loss:.4f}")
+    print(f"Final Validation MSE: {cnn_final_loss:.4f}")
 
     # Plot Training History (Now tracking loss instead of accuracy)
     plot_history_reg(cnn_history, "CNN")

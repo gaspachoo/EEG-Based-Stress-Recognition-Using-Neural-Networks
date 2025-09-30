@@ -32,7 +32,7 @@ def filter_all_data(method_name, input_dir):
 
             print(f"✅ Saved cleaned file to {save_path}")
 
-    print("🚀 All files processed successfully.")
+    print("All files processed successfully.")
 
 
 if __name__ == "__main__":
