@@ -1,49 +1,64 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 from support_func.import_data import load_dataset2
-from support_func.dataset_class import *
-from support_func.early_stopping_class import *
+from support_func.dataset_class import EEGDataset_cla
+from support_func.early_stopping_class import EarlyStopping
 from sklearn.model_selection import train_test_split
 
 
-def train_gen(data_folder, labels_filename, num_classes, test_size=0.2, lstm= False, sampling_mode=None):
+def train_gen(
+    data_folder,
+    labels_filename,
+    num_classes,
+    test_size=0.2,
+    lstm=False,
+    sampling_mode=None,
+):
     """Generates the train and test data loaders for classification."""
-    
+
     # ✅ Load dataset
-    data, labels = load_dataset2(data_folder, labels_filename)  # data: (40, 9, channels, time), labels: (40, 9)
+    data, labels = load_dataset2(
+        data_folder, labels_filename
+    )  # data: (40, 9, channels, time), labels: (40, 9)
     data = np.array(data, dtype=np.float32)
 
     if lstm:
         labels = np.median(labels, axis=1).astype(int)  # # Take the Median of 9 trials
         num_channels, num_timepoints = data.shape[2], data.shape[3]  # (channels, time)
-    else:     
+    else:
         # ✅ Ensure shape is correct (Flatten subjects & trials)
         samples = data.shape[0] * data.shape[1]  # 40 * 9 = 360 samples
-        data = data.reshape(samples, data.shape[2], data.shape[3])  # (360, channels, time)
+        data = data.reshape(
+            samples, data.shape[2], data.shape[3]
+        )  # (360, channels, time)
         labels = labels.reshape(samples)  # Flatten labels to match
         num_channels, num_timepoints = data.shape[1], data.shape[2]
 
     labels = labels - 1
- 
+
     # Group labels (linspace or quantile binning)
-    bins = np.linspace(labels.min(), labels.max(), num_classes + 1)[1:-1]  # Distribute on evenly spaced points
-    #bins = np.quantile(labels, np.linspace(0, 1, num_classes + 1))[1:-1]  # Evenly distribute data across nomber of samples in each class
+    bins = np.linspace(labels.min(), labels.max(), num_classes + 1)[
+        1:-1
+    ]  # Distribute on evenly spaced points
+    # bins = np.quantile(labels, np.linspace(0, 1, num_classes + 1))[1:-1]  # Evenly distribute data across nomber of samples in each class
     grouped_labels = np.digitize(labels, bins, right=True)
     print("Class distribution:", bins, np.bincount(grouped_labels))
-    
+
     # Stratified split
     indices = np.arange(len(data))
-    train_idx, test_idx = train_test_split(indices, stratify=grouped_labels, test_size=test_size, random_state=42)
+    train_idx, test_idx = train_test_split(
+        indices, stratify=grouped_labels, test_size=test_size, random_state=42
+    )
 
     X_train, y_train = data[train_idx], grouped_labels[train_idx]
     X_test, y_test = data[test_idx], grouped_labels[test_idx]
 
     # Handle sampling if necessary
-    if sampling_mode == 'oversampling':
+    if sampling_mode == "oversampling":
         X_train, y_train = random_oversample(X_train, y_train)
-    elif sampling_mode == 'undersampling':
+    elif sampling_mode == "undersampling":
         X_train, y_train = random_undersample(X_train, y_train)
 
     # Create datasets & dataloaders
@@ -84,19 +99,34 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
     return avg_loss, accuracy
 
 
-def train_gen2(data_folder, labels_filename, num_classes, test_size=0.2, lstm=False, sampling_mode=None):
+def train_gen2(
+    data_folder,
+    labels_filename,
+    num_classes,
+    test_size=0.2,
+    lstm=False,
+    sampling_mode=None,
+):
     """Generates dataloaders for classification."""
 
     # ✅ Data loading
-    data, labels = load_dataset2(data_folder, labels_filename)  # (40, 9, num_segments, channels, time), (40, 9, num_segments)
+    data, labels = load_dataset2(
+        data_folder, labels_filename
+    )  # (40, 9, num_segments, channels, time), (40, 9, num_segments)
 
-    
     # Get dimensions
     num_subjects, num_trials = 40, 9
-    num_segments, num_channels, num_timepoints = 12, 32, 256  # Based on your print output
+    num_segments, num_channels, num_timepoints = (
+        12,
+        32,
+        256,
+    )  # Based on your print output
 
     # ✅ Preallocate a fixed-size NumPy array instead of using an object array
-    data_array = np.zeros((num_subjects, num_trials, num_segments, num_channels, num_timepoints), dtype=np.float32)
+    data_array = np.zeros(
+        (num_subjects, num_trials, num_segments, num_channels, num_timepoints),
+        dtype=np.float32,
+    )
     labels_array = np.zeros((num_subjects, num_trials, num_segments), dtype=int)
 
     # ✅ Fill the array manually
@@ -112,7 +142,6 @@ def train_gen2(data_folder, labels_filename, num_classes, test_size=0.2, lstm=Fa
     data = data_array
     labels = labels_array
 
-
     # ✅ Convert data to numpy
     data = np.array(data, dtype=np.float32)
     labels = np.array(labels, dtype=int)
@@ -125,19 +154,27 @@ def train_gen2(data_folder, labels_filename, num_classes, test_size=0.2, lstm=Fa
         bins = np.histogram_bin_edges(labels, bins=num_classes)[1:-1]
         grouped_labels = np.digitize(labels, bins, right=True)
 
-        print("Grouped labels shape after binning:", grouped_labels.shape)  # Should be (40,)
+        print(
+            "Grouped labels shape after binning:", grouped_labels.shape
+        )  # Should be (40,)
 
         # ✅ Fix the shape of `data` for LSTM
         seq_len = data.shape[1] * data.shape[2]  # trials * num_segments (9 * 12)
         data = data.reshape(40, seq_len, data.shape[3], data.shape[4])
 
-        num_channels, num_timepoints = data.shape[2], data.shape[3]  # Keep correct dimensions
+        num_channels, num_timepoints = (
+            data.shape[2],
+            data.shape[3],
+        )  # Keep correct dimensions
 
-
-    else:  
+    else:
         # ✅ Flatten (40, 9, num_segments, channels, time) → (total_samples, channels, time)
-        samples = data.shape[0] * data.shape[1] * data.shape[2]  # (40 * 9 * num_segments)
-        data = data.reshape(samples, data.shape[3], data.shape[4])  # (total_samples, channels, time)
+        samples = (
+            data.shape[0] * data.shape[1] * data.shape[2]
+        )  # (40 * 9 * num_segments)
+        data = data.reshape(
+            samples, data.shape[3], data.shape[4]
+        )  # (total_samples, channels, time)
         labels = labels.reshape(samples)  # Flatten labels
 
         # ✅ Bin labels
@@ -152,22 +189,26 @@ def train_gen2(data_folder, labels_filename, num_classes, test_size=0.2, lstm=Fa
     # ✅ Check for class imbalance
     min_class_count = np.min(np.bincount(grouped_labels))
     if min_class_count < 2:
-        print("⚠️ Warning: Some classes have less than 2 samples. Disabling stratification.")
+        print(
+            "Warning: Some classes have less than 2 samples. Disabling stratification."
+        )
         stratify = None
     else:
         stratify = grouped_labels
 
     # ✅ Split train/test
     indices = np.arange(len(data))
-    train_idx, test_idx = train_test_split(indices, stratify=stratify, test_size=test_size, random_state=42)
+    train_idx, test_idx = train_test_split(
+        indices, stratify=stratify, test_size=test_size, random_state=42
+    )
 
     X_train, y_train = data[train_idx], grouped_labels[train_idx]
     X_test, y_test = data[test_idx], grouped_labels[test_idx]
 
     # ✅ Handle sampling
-    if sampling_mode == 'oversampling':
+    if sampling_mode == "oversampling":
         X_train, y_train = random_oversample(X_train, y_train)
-    elif sampling_mode == 'undersampling':
+    elif sampling_mode == "undersampling":
         X_train, y_train = random_undersample(X_train, y_train)
 
     # ✅ Create DataLoaders
@@ -181,9 +222,16 @@ def train_gen2(data_folder, labels_filename, num_classes, test_size=0.2, lstm=Fa
     return train_loader, test_loader, num_channels, num_timepoints
 
 
-
-
-def train_with_early_stopping(model, train_loader, val_loader, device, num_epochs=50, patience=7, lr=0.001, criterion=nn.CrossEntropyLoss()):
+def train_with_early_stopping(
+    model,
+    train_loader,
+    val_loader,
+    device,
+    num_epochs=50,
+    patience=7,
+    lr=0.001,
+    criterion=nn.CrossEntropyLoss(),
+):
     """Train given model with given train loader and validation loader. Please specify the device to use.
 
     Args:
@@ -198,25 +246,29 @@ def train_with_early_stopping(model, train_loader, val_loader, device, num_epoch
     Returns:
         model, model_history (ndarray)
     """
-    
+
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     early_stopping = EarlyStopping(patience=patience)
 
-    history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
+    history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
 
     print(f"Using device: {device}")
     for epoch in range(num_epochs):
-        train_loss, train_acc = train_one_epoch(model, train_loader, optimizer, criterion,device)
+        train_loss, train_acc = train_one_epoch(
+            model, train_loader, optimizer, criterion, device
+        )
         val_loss, val_acc = validate(model, val_loader, criterion, device)
 
-        history['train_loss'].append(train_loss)
-        history['train_acc'].append(train_acc)
-        history['val_loss'].append(val_loss)
-        history['val_acc'].append(val_acc)
+        history["train_loss"].append(train_loss)
+        history["train_acc"].append(train_acc)
+        history["val_loss"].append(val_loss)
+        history["val_acc"].append(val_acc)
 
-        print(f"Epoch [{epoch+1}/{num_epochs}] - "
-              f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}% - "
-              f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.2f}%")
+        print(
+            f"Epoch [{epoch+1}/{num_epochs}] - "
+            f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}% - "
+            f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.2f}%"
+        )
 
         early_stopping(val_loss)
         if early_stopping.early_stop:
@@ -279,7 +331,6 @@ def random_oversample(data, labels):
 
 
 def random_undersample(data, labels):
-    from collections import Counter
 
     unique_classes, counts = np.unique(labels, return_counts=True)
     min_count = counts.min()

@@ -17,20 +17,13 @@ if __name__ == "__main__":
 
     # Load Data (Regression Mode)
     train_loader, test_loader, num_channels, num_timepoints = train_gen(
-        data_folder,
-        labels_file,
-        test_size=test_size,
-        sampling_mode=sampling_mode
+        data_folder, labels_file, test_size=test_size, sampling_mode=sampling_mode
     )
 
     print("✅ Data processed")
 
     # Define CNN model for Regression (num_classes = 1)
-    cnn_model = SimpleNN3(
-        num_channels,
-        num_timepoints,
-        num_classes=1
-        ).to(device)
+    cnn_model = SimpleNN3(num_channels, num_timepoints, num_classes=1).to(device)
 
     print("⚙️ Training CNN for Regression")
     cnn_model, cnn_history = train_with_early_stopping(
