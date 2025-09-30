@@ -46,11 +46,16 @@ def train_gen(
     grouped_labels = np.digitize(labels, bins, right=True)
     # Plot class distribution as histogram
     import matplotlib.pyplot as plt
-    plt.figure(figsize=(5,3))
-    plt.bar(range(len(np.bincount(grouped_labels))), np.bincount(grouped_labels), color='skyblue')
-    plt.title('Class Distribution (train_gen)')
-    plt.xlabel('Class')
-    plt.ylabel('Count')
+
+    plt.figure(figsize=(5, 3))
+    plt.bar(
+        range(len(np.bincount(grouped_labels))),
+        np.bincount(grouped_labels),
+        color="skyblue",
+    )
+    plt.title("Class Distribution")
+    plt.xlabel("Class")
+    plt.ylabel("Count")
     plt.tight_layout()
     plt.show()
 
@@ -191,11 +196,16 @@ def train_gen2(
 
     # Plot class distribution as histogram
     import matplotlib.pyplot as plt
-    plt.figure(figsize=(5,3))
-    plt.bar(range(len(np.bincount(grouped_labels))), np.bincount(grouped_labels), color='skyblue')
-    plt.title('Class Distribution (train_gen2)')
-    plt.xlabel('Class')
-    plt.ylabel('Count')
+
+    plt.figure(figsize=(5, 3))
+    plt.bar(
+        range(len(np.bincount(grouped_labels))),
+        np.bincount(grouped_labels),
+        color="skyblue",
+    )
+    plt.title("Class Distribution")
+    plt.xlabel("Class")
+    plt.ylabel("Count")
     plt.tight_layout()
     plt.show()
 
