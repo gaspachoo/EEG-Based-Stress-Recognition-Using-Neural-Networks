@@ -18,7 +18,7 @@ def train_gen(
 ):
     """Generates the train and test data loaders for classification."""
 
-    # ✅ Load dataset
+    # Load dataset
     data, labels = load_dataset2(
         data_folder, labels_filename
     )  # data: (40, 9, channels, time), labels: (40, 9)
@@ -28,7 +28,7 @@ def train_gen(
         labels = np.median(labels, axis=1).astype(int)  # # Take the Median of 9 trials
         num_channels, num_timepoints = data.shape[2], data.shape[3]  # (channels, time)
     else:
-        # ✅ Ensure shape is correct (Flatten subjects & trials)
+        # Ensure shape is correct (Flatten subjects & trials)
         samples = data.shape[0] * data.shape[1]  # 40 * 9 = 360 samples
         data = data.reshape(
             samples, data.shape[2], data.shape[3]
@@ -44,7 +44,15 @@ def train_gen(
     ]  # Distribute on evenly spaced points
     # bins = np.quantile(labels, np.linspace(0, 1, num_classes + 1))[1:-1]  # Evenly distribute data across nomber of samples in each class
     grouped_labels = np.digitize(labels, bins, right=True)
-    print("Class distribution:", bins, np.bincount(grouped_labels))
+    # Plot class distribution as histogram
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(5,3))
+    plt.bar(range(len(np.bincount(grouped_labels))), np.bincount(grouped_labels), color='skyblue')
+    plt.title('Class Distribution (train_gen)')
+    plt.xlabel('Class')
+    plt.ylabel('Count')
+    plt.tight_layout()
+    plt.show()
 
     # Stratified split
     indices = np.arange(len(data))
@@ -79,7 +87,7 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
     total = 0
 
     for batch_data, batch_labels in loader:
-        # ⬇️ Transfert GPU
+        # Transfert GPU
         batch_data = batch_data.to(device)
         batch_labels = batch_labels.to(device)
 
@@ -109,7 +117,7 @@ def train_gen2(
 ):
     """Generates dataloaders for classification."""
 
-    # ✅ Data loading
+    # Data loading
     data, labels = load_dataset2(
         data_folder, labels_filename
     )  # (40, 9, num_segments, channels, time), (40, 9, num_segments)
@@ -122,14 +130,14 @@ def train_gen2(
         256,
     )  # Based on your print output
 
-    # ✅ Preallocate a fixed-size NumPy array instead of using an object array
+    # Preallocate a fixed-size NumPy array instead of using an object array
     data_array = np.zeros(
         (num_subjects, num_trials, num_segments, num_channels, num_timepoints),
         dtype=np.float32,
     )
     labels_array = np.zeros((num_subjects, num_trials, num_segments), dtype=int)
 
-    # ✅ Fill the array manually
+    # Fill the array manually
     for i in range(num_subjects):
         for j in range(num_trials):
             if data[i, j] is not None:
@@ -138,19 +146,19 @@ def train_gen2(
             else:
                 print(f"Warning: Missing data at subject {i}, trial {j}")  # Debug info
 
-    # ✅ Now, data_array and labels_array can be safely used
+    # Now, data_array and labels_array can be safely used
     data = data_array
     labels = labels_array
 
-    # ✅ Convert data to numpy
+    # Convert data to numpy
     data = np.array(data, dtype=np.float32)
     labels = np.array(labels, dtype=int)
 
     if lstm:
-        # ✅ Aggregate labels over trials AND segments to get (40,)
+        # Aggregate labels over trials AND segments to get (40,)
         labels = np.median(labels, axis=(1, 2)).astype(int)  # (40,)
 
-        # ✅ Bin labels
+        # Bin labels
         bins = np.histogram_bin_edges(labels, bins=num_classes)[1:-1]
         grouped_labels = np.digitize(labels, bins, right=True)
 
@@ -158,7 +166,7 @@ def train_gen2(
             "Grouped labels shape after binning:", grouped_labels.shape
         )  # Should be (40,)
 
-        # ✅ Fix the shape of `data` for LSTM
+        # Fix the shape of `data` for LSTM
         seq_len = data.shape[1] * data.shape[2]  # trials * num_segments (9 * 12)
         data = data.reshape(40, seq_len, data.shape[3], data.shape[4])
 
@@ -168,7 +176,7 @@ def train_gen2(
         )  # Keep correct dimensions
 
     else:
-        # ✅ Flatten (40, 9, num_segments, channels, time) → (total_samples, channels, time)
+        # Flatten (40, 9, num_segments, channels, time) → (total_samples, channels, time)
         samples = (
             data.shape[0] * data.shape[1] * data.shape[2]
         )  # (40 * 9 * num_segments)
@@ -177,16 +185,24 @@ def train_gen2(
         )  # (total_samples, channels, time)
         labels = labels.reshape(samples)  # Flatten labels
 
-        # ✅ Bin labels
+        # Bin labels
         bins = np.histogram_bin_edges(labels, bins=num_classes)[1:-1]
         grouped_labels = np.digitize(labels, bins, right=True)
 
-        print("Class distribution:", bins, np.bincount(grouped_labels))
+    # Plot class distribution as histogram
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(5,3))
+    plt.bar(range(len(np.bincount(grouped_labels))), np.bincount(grouped_labels), color='skyblue')
+    plt.title('Class Distribution (train_gen2)')
+    plt.xlabel('Class')
+    plt.ylabel('Count')
+    plt.tight_layout()
+    plt.show()
 
-    # ✅ Ensure `grouped_labels` is 1D
+    # Ensure `grouped_labels` is 1D
     grouped_labels = grouped_labels.flatten()
 
-    # ✅ Check for class imbalance
+    # Check for class imbalance
     min_class_count = np.min(np.bincount(grouped_labels))
     if min_class_count < 2:
         print(
@@ -196,7 +212,7 @@ def train_gen2(
     else:
         stratify = grouped_labels
 
-    # ✅ Split train/test
+    # Split train/test
     indices = np.arange(len(data))
     train_idx, test_idx = train_test_split(
         indices, stratify=stratify, test_size=test_size, random_state=42
@@ -205,13 +221,13 @@ def train_gen2(
     X_train, y_train = data[train_idx], grouped_labels[train_idx]
     X_test, y_test = data[test_idx], grouped_labels[test_idx]
 
-    # ✅ Handle sampling
+    # Handle sampling
     if sampling_mode == "oversampling":
         X_train, y_train = random_oversample(X_train, y_train)
     elif sampling_mode == "undersampling":
         X_train, y_train = random_undersample(X_train, y_train)
 
-    # ✅ Create DataLoaders
+    # Create DataLoaders
     train_dataset = EEGDataset_cla(X_train, y_train)
     test_dataset = EEGDataset_cla(X_test, y_test)
 

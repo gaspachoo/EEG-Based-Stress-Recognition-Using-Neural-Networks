@@ -178,7 +178,7 @@ class SimpleNN3(nn.Module):  #### Adapted for reg
 
 
 class EEG_CNN3(nn.Module):  #### Adapted for reg
-    def __init__(self, num_channels, num_timepoints, num_classes):  # ✅ Fix this
+    def __init__(self, num_channels, num_timepoints, num_classes):  # Fix this
         super().__init__()
 
         self.conv1 = nn.Conv1d(
@@ -197,7 +197,7 @@ class EEG_CNN3(nn.Module):  #### Adapted for reg
         self.fc2 = nn.Linear(128, 64)
         self.fc3 = nn.Linear(
             64, num_classes
-        )  # ✅ Ensure this outputs a single regression value
+        )  # Ensure this outputs a single regression value
 
         self.dropout = nn.Dropout(0.3)
 
@@ -211,7 +211,7 @@ class EEG_CNN3(nn.Module):  #### Adapted for reg
         x = self.dropout(x)
         x = F.relu(self.fc2(x))
         x = self.dropout(x)
-        x = self.fc3(x)  # ✅ No activation function (linear output for regression)
+        x = self.fc3(x)  # No activation function (linear output for regression)
 
         return x
 
@@ -233,9 +233,9 @@ class EEG_LSTM(nn.Module):
 
     def forward(self, x):
         batch_size, seq_len, channels, timepoints = x.shape
-        x = x.view(batch_size, seq_len, -1)  # ✅ Flatten (channels, time) per trial
+        x = x.view(batch_size, seq_len, -1)  # Flatten (channels, time) per trial
 
-        _, (hidden, _) = self.lstm(x)  # ✅ Retrieve the last hidden state of the LSTM
-        x = self.fc(hidden[-1])  # ✅ Final fully connected layer for classification
+        _, (hidden, _) = self.lstm(x)  # Retrieve the last hidden state of the LSTM
+        x = self.fc(hidden[-1])  # Final fully connected layer for classification
 
         return x

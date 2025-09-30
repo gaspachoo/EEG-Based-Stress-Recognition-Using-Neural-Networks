@@ -37,7 +37,7 @@ def plot_history_reg(history, model_name):
 def evaluate_with_metrics_gpu(model, loader, device, num_classes):
     model.eval()
 
-    # ✅ Adapt F1-Score and Confusion Matrix to dynamic num_classes
+    # Adapt F1-Score and Confusion Matrix to dynamic num_classes
     f1_metric = MulticlassF1Score(num_classes=num_classes, average="weighted").to(
         device
     )
@@ -59,13 +59,13 @@ def evaluate_with_metrics_gpu(model, loader, device, num_classes):
 
     print(f"Weighted F1-score (GPU): {f1_score_gpu:.4f}")
 
-    # ✅ Move Confusion Matrix to CPU and convert to NumPy
+    # Move Confusion Matrix to CPU and convert to NumPy
     cm_cpu = confusion_matrix_gpu.cpu().numpy()
 
-    # ✅ Normalize by actual class (row-wise)
+    # Normalize by actual class (row-wise)
     cm_normalized = cm_cpu.astype("float") / cm_cpu.sum(axis=1, keepdims=True)
 
-    # ✅ Dynamically set class labels
+    # Dynamically set class labels
     if num_classes == 2:
         class_labels = ["Low", "High"]
     elif num_classes == 3:
@@ -73,7 +73,7 @@ def evaluate_with_metrics_gpu(model, loader, device, num_classes):
     else:
         class_labels = [str(i + 1) for i in range(num_classes)]  # 1,2,3,...,num_classes
 
-    # ✅ Plot Normalized Confusion Matrix
+    # Plot Normalized Confusion Matrix
     plt.figure(figsize=(6, 5))
     sns.heatmap(
         cm_normalized,

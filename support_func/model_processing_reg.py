@@ -8,7 +8,7 @@ from support_func.dataset_class import EEGDataset_reg
 from support_func.early_stopping_class import EarlyStopping
 
 
-# ✅ Load dataset function (EEG data & stress labels)
+# Load dataset function (EEG data & stress labels)
 def reshape_dataset(data_folder, labels_filename):
     data, labels = load_dataset(data_folder, labels_filename)
     data = np.array(
@@ -29,7 +29,7 @@ def reshape_dataset(data_folder, labels_filename):
     return X, y, num_channels, num_timepoints
 
 
-# ✅ Data Preparation with Train-Test Split
+# Data Preparation with Train-Test Split
 def train_gen(data_folder, labels_filename, test_size=0.2, sampling_mode=None):
     """Prepares EEG data for training by generating PyTorch DataLoaders for regression.
 
@@ -73,7 +73,7 @@ def train_gen(data_folder, labels_filename, test_size=0.2, sampling_mode=None):
     return train_loader, test_loader, num_channels, num_timepoints
 
 
-# ✅ Train One Epoch (For Regression)
+# Train One Epoch (For Regression)
 def train_one_epoch(model, loader, optimizer, criterion, device):
     model.train()
     total_loss = 0
@@ -94,7 +94,7 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
     return avg_loss
 
 
-# ✅ Training with Early Stopping
+# Training with Early Stopping
 def train_with_early_stopping(
     model, train_loader, val_loader, device, num_epochs=50, patience=7, lr=0.001
 ):
@@ -139,7 +139,7 @@ def train_with_early_stopping(
     return model, history
 
 
-# ✅ Validation Function (Regression)
+# Validation Function (Regression)
 def validate(model, loader, criterion, device):
     model.eval()
     total_loss = 0
