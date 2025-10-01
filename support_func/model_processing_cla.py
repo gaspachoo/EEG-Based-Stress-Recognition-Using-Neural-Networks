@@ -47,15 +47,15 @@ def train_gen(
     # Plot class distribution as histogram
     import matplotlib.pyplot as plt
 
+    # Plot class distribution as percentages
+    counts = np.bincount(grouped_labels)
+    percentages = 100 * counts / counts.sum()
     plt.figure(figsize=(5, 3))
-    plt.bar(
-        range(len(np.bincount(grouped_labels))),
-        np.bincount(grouped_labels),
-        color="skyblue",
-    )
-    plt.title("Class Distribution")
+    plt.bar(range(len(percentages)), percentages, color="skyblue")
+    plt.title("Class Distribution (%)")
     plt.xlabel("Class")
-    plt.ylabel("Count")
+    plt.ylabel("Percentage (%)")
+    plt.ylim(0, 100)
     plt.tight_layout()
     plt.show()
 
@@ -197,15 +197,15 @@ def train_gen2(
     # Plot class distribution as histogram
     import matplotlib.pyplot as plt
 
+    # Plot class distribution as percentages
+    counts = np.bincount(grouped_labels)
+    percentages = 100 * counts / counts.sum()
     plt.figure(figsize=(5, 3))
-    plt.bar(
-        range(len(np.bincount(grouped_labels))),
-        np.bincount(grouped_labels),
-        color="skyblue",
-    )
-    plt.title("Class Distribution")
+    plt.bar(range(len(percentages)), percentages, color="skyblue")
+    plt.title("Class Distribution (%)")
     plt.xlabel("Class")
-    plt.ylabel("Count")
+    plt.ylabel("Percentage (%)")
+    plt.ylim(0, 100)
     plt.tight_layout()
     plt.show()
 
