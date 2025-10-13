@@ -37,7 +37,6 @@ def visualize_model(model_cls, model_name, device=torch.device("cpu")):
     model.eval()
 
     x = make_dummy_input(model_name).to(device)
-
     try:
         from torchviz import make_dot
 
@@ -53,32 +52,23 @@ def visualize_model(model_cls, model_name, device=torch.device("cpu")):
         dot_bin = shutil.which("dot")
         if dot_bin is not None:
             try:
-                # PNG
                 subprocess.run(
-                    [
-                        dot_bin,
-                        "-Tpng",
-                        str(dot_path),
-                        "-o",
-                        str(png_path),
-                    ],
+                    [dot_bin, "-Tpng", str(dot_path), "-o", str(png_path)],
                     check=True,
                 )
 
-                # SVG
                 svg_path = OUTDIR / f"{model_name}.svg"
                 subprocess.run(
-                    [
-                        dot_bin,
-                        "-Tsvg",
-                        str(dot_path),
-                        "-o",
-                        str(svg_path),
-                    ],
+                    [dot_bin, "-Tsvg", str(dot_path), "-o", str(svg_path)],
                     check=True,
                 )
 
                 print(f"Rendered: {png_path} and {svg_path}")
+                try:
+                    dot_path.unlink()
+                    print(f"Removed intermediate dot: {dot_path.name}")
+                except Exception:
+                    pass
             except subprocess.CalledProcessError:
                 print("dot failed to render. Dot saved to:", dot_path)
         else:
@@ -152,7 +142,8 @@ def visualize_simple(model_cls, model_name, device=torch.device("cpu")):
         fh.write("digraph G {\n")
         fh.write("rankdir=LR; node [shape=record];\n")
         for i, (name, mtype, shape) in enumerate(records):
-            label = f"{name}: {mtype}\\n{shape}"
+            # use two-line label: name on first line, type+shape on second
+            label = f"{name}\\n{mtype} {shape}"
             fh.write(f'node{i} [label="{label}"];\n')
             if i > 0:
                 fh.write(f"node{i-1} -> node{i};\n")
@@ -168,6 +159,11 @@ def visualize_simple(model_cls, model_name, device=torch.device("cpu")):
                 check=True,
             )
             print(f"Rendered simplified graph: {png.name}")
+            try:
+                simple_path.unlink()
+                print(f"Removed intermediate dot: {simple_path.name}")
+            except Exception:
+                pass
         except Exception:
             print(f"Could not render simplified graph for {model_name}")
     else:
@@ -237,6 +233,11 @@ def main():
                 check=True,
             )
             print(f"Rendered {png.name} and {svg.name}")
+            try:
+                dotfile.unlink()
+                print(f"Removed intermediate dot: {dotfile.name}")
+            except Exception:
+                pass
         except subprocess.CalledProcessError:
             print(f"Failed to render {dotfile.name} with {dot_bin}")
 
