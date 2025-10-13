@@ -40,94 +40,58 @@ class SimpleNN2(nn.Module):
 
 
 # CNNs -----------------------------------------------------
+
+
 class EEG_CNN(nn.Module):
     def __init__(self, num_channels, num_timepoints, num_classes):
-        super(EEG_CNN, self).__init__()
-
+        super().__init__()
         self.conv1 = nn.Conv1d(
-            in_channels=num_channels,
-            out_channels=64,
-            kernel_size=7,
-            stride=1,
-            padding=3,
-        )  # kernel = filter
-        self.bn1 = nn.BatchNorm1d(64)
-        self.pool1 = nn.MaxPool1d(kernel_size=2)
+            in_channels=num_channels, out_channels=32, kernel_size=7, padding=3
+        )
+        self.pool1 = nn.MaxPool1d(2)
+        self.conv2 = nn.Conv1d(32, 64, kernel_size=5, padding=2)
 
-        self.conv2 = nn.Conv1d(64, 128, kernel_size=5, stride=1, padding=2)
-        self.bn2 = nn.BatchNorm1d(128)
-        self.pool2 = nn.MaxPool1d(kernel_size=2)
+        self.pool2 = nn.MaxPool1d(2)
+        conv_output_size = num_timepoints // 4  # Two max-pooling layers of size 2
+        self.fc1 = nn.Linear(64 * conv_output_size, 64)
 
-        self.conv3 = nn.Conv1d(128, 256, kernel_size=3, stride=1, padding=1)
-        self.bn3 = nn.BatchNorm1d(256)
-        self.pool3 = nn.MaxPool1d(kernel_size=2)
-
-        # Compute the flattened size after convolutions and pooling
-        conv_output_size = num_timepoints // (2 * 2 * 2)  # 3 poolings of size 2
-        self.fc1 = nn.Linear(256 * conv_output_size, 128)
-        self.fc2 = nn.Linear(128, num_classes)
+        self.fc2 = nn.Linear(64, num_classes)
 
     def forward(self, x):
-        # x: (batch_size, channels, time)
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = self.pool1(x)
-
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = self.pool2(x)
-
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = self.pool3(x)
-
-        x = x.view(x.size(0), -1)  # Flatten
+        x = self.pool1(F.relu(self.conv1(x)))
+        x = self.pool2(F.relu(self.conv2(x)))
+        x = x.view(x.size(0), -1)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
 
 
 class EEG_CNN2(nn.Module):
-    """
-    3 blocs conv (64→128→256) + BN + ReLU + MaxPool(2) ×3
-    Dropout: 0.3 après bloc1 et bloc2, 0.4 après fc1.
-    Sortie = logits (pas d'activation explicite).
-    """
-
-    def __init__(
-        self, num_channels, num_timepoints, num_classes, p_drop_block=0.3, p_drop_fc=0.4
-    ):
+    def __init__(self, num_channels, num_timepoints, num_classes):
         super().__init__()
-
-        self.conv1 = nn.Conv1d(num_channels, 64, kernel_size=7, stride=1, padding=3)
-        self.bn1 = nn.BatchNorm1d(64)
-        self.pool1 = nn.MaxPool1d(kernel_size=2)
-        self.do1 = nn.Dropout(p_drop_block)
-
-        self.conv2 = nn.Conv1d(64, 128, kernel_size=5, stride=1, padding=2)
-        self.bn2 = nn.BatchNorm1d(128)
-        self.pool2 = nn.MaxPool1d(kernel_size=2)
-        self.do2 = nn.Dropout(p_drop_block)
-
-        self.conv3 = nn.Conv1d(128, 256, kernel_size=3, stride=1, padding=1)
-        self.bn3 = nn.BatchNorm1d(256)
-        self.pool3 = nn.MaxPool1d(kernel_size=2)
-
-        conv_output_size = num_timepoints // 8  # 3× MaxPool(2)
-        self.fc1 = nn.Linear(256 * conv_output_size, 128)
-        self.do3 = nn.Dropout(p_drop_fc)
-        self.fc2 = nn.Linear(128, num_classes)
+        self.conv1 = nn.Conv1d(
+            in_channels=num_channels, out_channels=32, kernel_size=7, padding=3
+        )
+        self.bn1 = nn.BatchNorm1d(32)
+        self.dropout1 = nn.Dropout(0.3)
+        self.pool1 = nn.MaxPool1d(2)
+        self.conv2 = nn.Conv1d(32, 64, kernel_size=5, padding=2)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.dropout2 = nn.Dropout(0.3)
+        self.pool2 = nn.MaxPool1d(2)
+        conv_output_size = num_timepoints // 4  # Two max-pooling layers of size 2
+        self.fc1 = nn.Linear(64 * conv_output_size, 64)
+        self.dropout3 = nn.Dropout(0.4)
+        self.fc2 = nn.Linear(64, num_classes)
 
     def forward(self, x):
-        # x: (B, C, T)
         x = self.pool1(F.relu(self.bn1(self.conv1(x))))
-        x = self.do1(x)
-
+        x = self.dropout1(x)
         x = self.pool2(F.relu(self.bn2(self.conv2(x))))
-        x = self.do2(x)
-
-        x = self.pool3(F.relu(self.bn3(self.conv3(x))))
-
+        x = self.dropout2(x)
         x = x.view(x.size(0), -1)
-        x = self.do3(F.relu(self.fc1(x)))
-        x = self.fc2(x)  # logits
+        x = self.dropout3(F.relu(self.fc1(x)))
+        x = self.fc2(x)
         return x
 
 
