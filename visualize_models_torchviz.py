@@ -92,13 +92,95 @@ def visualize_model(model_cls, model_name, device=torch.device("cpu")):
         print(f"torchviz not installed. Saved placeholder dot to {dot_path}")
 
 
+def visualize_simple(model_cls, model_name, device=torch.device("cpu")):
+    """Create a compact graph showing module type and output shapes.
+
+    This uses forward hooks to record the output tensor shapes of modules
+    during a single forward pass on a dummy input. Then builds a small DOT
+    where each node is "module_name: ModuleType [shape]".
+    """
+    model = model_cls(32, 256, 2).to(device)
+    model.eval()
+
+    hooks = []
+    records = []
+
+    def make_hook(name):
+        def hook(module, inp, out):
+            try:
+                shape = tuple(out.shape)
+            except Exception:
+                shape = str(type(out))
+            records.append((name, module.__class__.__name__, shape))
+
+        return hook
+
+    # register hooks for leaf modules
+    for name, module in model.named_modules():
+        # skip the top-level module (empty name)
+        if name == "":
+            continue
+        # only attach to common layer types to avoid clutter
+        if isinstance(
+            module,
+            (
+                torch.nn.Conv1d,
+                torch.nn.Linear,
+                torch.nn.BatchNorm1d,
+                torch.nn.MaxPool1d,
+                torch.nn.Dropout,
+                torch.nn.GRU,
+                torch.nn.LSTM,
+            ),
+        ):
+            hooks.append(module.register_forward_hook(make_hook(name)))
+
+    x = make_dummy_input(model_name).to(device)
+    with torch.no_grad():
+        try:
+            _ = model(x)
+        except Exception:
+            # Some models may expect different shapes; ignore failures
+            pass
+
+    for h in hooks:
+        h.remove()
+
+    # Build a simple dot
+    simple_path = OUTDIR / f"{model_name}_simple.dot"
+    with open(simple_path, "w", encoding="utf-8") as fh:
+        fh.write("digraph G {\n")
+        fh.write("rankdir=LR; node [shape=record];\n")
+        for i, (name, mtype, shape) in enumerate(records):
+            label = f"{name}: {mtype}\\n{shape}"
+            fh.write(f'node{i} [label="{label}"];\n')
+            if i > 0:
+                fh.write(f"node{i-1} -> node{i};\n")
+        fh.write("}\n")
+
+    # Try render
+    dot_bin = shutil.which("dot") or None
+    if dot_bin:
+        png = simple_path.with_suffix(".png")
+        try:
+            subprocess.run(
+                [dot_bin, "-Tpng", str(simple_path), "-o", str(png)],
+                check=True,
+            )
+            print(f"Rendered simplified graph: {png.name}")
+        except Exception:
+            print(f"Could not render simplified graph for {model_name}")
+    else:
+        print(f"Saved simplified dot to {simple_path}")
+
+
 def main():
     models = ["SimpleNN", "EEG_CNN", "EEG_CNN2"]
     for name in models:
         if hasattr(NN_classes, name):
             cls = getattr(NN_classes, name)
             print(f"Visualizing {name}...")
-            visualize_model(cls, name)
+            visualize_simple(cls, name)
         else:
             print(f"Model {name} not found in NN_classes")
 
