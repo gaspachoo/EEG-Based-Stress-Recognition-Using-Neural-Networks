@@ -41,7 +41,6 @@ def get_model_classes():
     names = [
         "SimpleNN",
         "EEG_CNN",
-        "SimpleNN2",
         "EEG_CNN2",
     ]
     cls_list = []
