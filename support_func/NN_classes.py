@@ -127,7 +127,6 @@ class EEG_CNN_GRU(nn.Module):
         self.dropout1 = nn.Dropout(0.3)
 
         # GRU
-        gru_input_size = num_timepoints // 2  # after pooling
         self.gru = nn.GRU(input_size=64, hidden_size=64, batch_first=True)
 
         # Fully connected
@@ -154,7 +153,7 @@ class EEG_CNN_GRU(nn.Module):
         return x
 
 
-class SimpleNN3(nn.Module):  #### Adapted for reg
+class SimpleNN3(nn.Module):  # Adapted for reg
     def __init__(self, num_channels, num_timepoints, num_classes, hidden_dim=128):
         super().__init__()
         input_size = num_channels * num_timepoints  # Flatten EEG input
@@ -177,7 +176,7 @@ class SimpleNN3(nn.Module):  #### Adapted for reg
         return x
 
 
-class EEG_CNN3(nn.Module):  #### Adapted for reg
+class EEG_CNN3(nn.Module):  # Adapted for reg
     def __init__(self, num_channels, num_timepoints, num_classes):  # Fix this
         super().__init__()
 
