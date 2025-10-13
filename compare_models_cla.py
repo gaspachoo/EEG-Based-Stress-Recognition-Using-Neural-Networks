@@ -35,8 +35,6 @@ def get_model_classes():
     # - SimpleNN2
     # - EEG_CNN2
     # - EEG_CNN_GRU
-    # - SimpleNN3
-    # - EEG_CNN3
     # - EEG_LSTM
     # Note: EEG_LSTM is disabled by default because it expects a different
     # data shape. Enable it only if you call `train_gen2(..., lstm=True)`.
@@ -45,7 +43,6 @@ def get_model_classes():
         "EEG_CNN",
         "SimpleNN2",
         "EEG_CNN2",
-        "EEG_CNN_GRU",
     ]
     cls_list = []
     for n in names:
