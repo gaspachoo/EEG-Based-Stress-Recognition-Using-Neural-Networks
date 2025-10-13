@@ -14,6 +14,8 @@ Adjust the `MODEL_LIST` below to add/remove models to compare.
 """
 from pathlib import Path
 import torch
+import random
+import numpy as np
 import json
 
 from support_func.model_processing_cla import (
@@ -54,6 +56,19 @@ def get_model_classes():
 
 def main():
     # Config
+    # Reproducibility: fixed seed for comparison
+    seed = 42
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    # Make cudnn deterministic (may slow down)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+    print(f"Using fixed seed: {seed}")
+
     data_folder = "filtered_data"
     labels_file = "scales.xls"
     num_classes = 2
