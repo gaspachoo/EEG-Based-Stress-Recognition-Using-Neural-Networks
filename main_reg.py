@@ -2,7 +2,7 @@ from support_func.model_processing_reg import (
     train_gen,
     train_with_early_stopping,
 )
-from support_func.NN_classes import SimpleNN3
+from support_func.NN_classes import SimpleNN_reg
 from support_func.results_evaluation import plot_history_reg
 import torch
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     print("Data processed")
 
     # Define CNN model for Regression (num_classes = 1)
-    cnn_model = SimpleNN3(num_channels, num_timepoints, num_classes=1).to(device)
+    cnn_model = SimpleNN_reg(num_channels, num_timepoints, num_classes=1).to(device)
 
     print("Training CNN for Regression")
     cnn_model, cnn_history = train_with_early_stopping(

@@ -6,9 +6,9 @@ import torch.nn.functional as F
 class SimpleNN(nn.Module):
     def __init__(self, num_channels, num_timepoints, num_classes):
         super(SimpleNN, self).__init__()
-        self.fc1 = nn.Linear(num_channels * num_timepoints, 128)
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, num_classes)
+        self.fc1 = nn.Linear(num_channels * num_timepoints, 64)
+        self.fc2 = nn.Linear(64, 32)
+        self.fc3 = nn.Linear(32, num_classes)
 
     def forward(self, x):
         x = x.view(x.size(0), -1)  # Flatten (channels, time)
@@ -36,29 +36,6 @@ class SimpleNN2(nn.Module):
         x = self.dropout1(F.relu(self.bn1(self.fc1(x))))
         x = self.dropout2(F.relu(self.bn2(self.fc2(x))))
         x = self.fc3(x)
-        return x
-
-
-class SimpleNN3(nn.Module):  # Adapted for reg
-    def __init__(self, num_channels, num_timepoints, num_classes, hidden_dim=128):
-        super().__init__()
-        input_size = num_channels * num_timepoints  # Flatten EEG input
-
-        self.fc1 = nn.Linear(input_size, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        self.fc3 = nn.Linear(
-            hidden_dim, num_classes
-        )  # Output a single value (regression)
-
-        self.dropout = nn.Dropout(0.3)
-
-    def forward(self, x):
-        x = x.view(x.size(0), -1)  # Flatten input to (batch_size, input_size)
-        x = F.relu(self.fc1(x))
-        x = self.dropout(x)
-        x = F.relu(self.fc2(x))
-        x = self.dropout(x)
-        x = self.fc3(x)  # No activation (linear output for regression)
         return x
 
 
@@ -141,8 +118,32 @@ class EEG_CNN2(nn.Module):
         return x
 
 
-class EEG_CNN3(nn.Module):  # Adapted for reg
-    def __init__(self, num_channels, num_timepoints, num_classes):  # Fix this
+# For regression ------------------------------------------------------------------
+class SimpleNN_reg(nn.Module):  # Adapted for reg
+    def __init__(self, num_channels, num_timepoints, num_classes, hidden_dim=128):
+        super().__init__()
+        input_size = num_channels * num_timepoints  # Flatten EEG input
+
+        self.fc1 = nn.Linear(input_size, hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+        self.fc3 = nn.Linear(
+            hidden_dim, num_classes
+        )  # Output a single value (regression)
+
+        self.dropout = nn.Dropout(0.3)
+
+    def forward(self, x):
+        x = x.view(x.size(0), -1)  # Flatten input to (batch_size, input_size)
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = F.relu(self.fc2(x))
+        x = self.dropout(x)
+        x = self.fc3(x)  # No activation (linear output for regression)
+        return x
+
+
+class EEG_CNN_reg(nn.Module):
+    def __init__(self, num_channels, num_timepoints, num_classes):
         super().__init__()
 
         self.conv1 = nn.Conv1d(
@@ -178,6 +179,9 @@ class EEG_CNN3(nn.Module):  # Adapted for reg
         x = self.fc3(x)  # No activation function (linear output for regression)
 
         return x
+
+
+# Others ------------------------------------------------------------------------
 
 
 class EEG_CNN_GRU(nn.Module):
