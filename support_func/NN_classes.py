@@ -63,8 +63,6 @@ class SimpleNN3(nn.Module):  # Adapted for reg
 
 
 # CNNs -----------------------------------------------------
-
-
 class EEG_CNN(nn.Module):
     def __init__(self, num_channels, num_timepoints, num_classes):
         super(EEG_CNN, self).__init__()
